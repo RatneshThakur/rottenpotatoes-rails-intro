@@ -31,10 +31,11 @@ class MoviesController < ApplicationController
 
     if(params[:sort] != session[:sort] or params[:ratings] != session[:ratings])
       if(params[:ratings] == nil)
-        redirect_to(:sort => @sort, :ratings => session[:ratings]) and return        
+        flash.keep
+        redirect_to movies_path(:sort => @sort, :ratings => session[:ratings]) and return        
       else
-        redirect_to(:sort =>@sort, :ratings => params[:ratings]) and return
-        return;
+        flash.keep
+        redirect_to movies_path(:sort =>@sort, :ratings => params[:ratings]) and return        
       end
     end
 
@@ -47,7 +48,7 @@ class MoviesController < ApplicationController
     else
       @table_header = ""
       @movies = Movie.where("rating IN (?)", @ratingsValues)
-  end 
+    end 
   end
 
   def new
