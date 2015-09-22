@@ -13,7 +13,7 @@ class MoviesController < ApplicationController
   def index
     @all_ratings = Movie.getRatings 
     @ratingsValues = @all_ratings 
-    @sort = nil;
+    @sort = nil
     if(params[:ratings] != nil )
       session[:ratings] = params[:ratings]
     end
