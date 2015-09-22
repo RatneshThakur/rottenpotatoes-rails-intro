@@ -12,18 +12,38 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings = Movie.getRatings 
-    @ratingsValues = @all_ratings   
+    @ratingsValues = @all_ratings 
+    @sort = nil;
+    if(params[:ratings] != nil )
+      session[:ratings] = params[:ratings]
+    end
+    if(params[:sort] != nil)
+      session[:sort] = params[:sort]
+      @sort = params[:sort]
+    elsif(session[:sort] != nil)
+      @sort = session[:sort]
+    end  
     if(params[:ratings] != nil)
       @ratingsValues = params[:ratings].keys    
+    elsif(session[:ratings] != nil)
+      @ratingsValues = session[:ratings].keys
     end
-    if(params[:sort] == "title")
+
+    if(params[:sort] != session[:sort] or params[:ratings] != session[:ratings])
+      if(params[:ratings] == nil)
+        redirect_to(:sort => @sort, :ratings => session[:ratings]) and return        
+      else
+        redirect_to(:sort =>@sort, :ratings => params[:ratings]) and return
+        return;
+      end
+    end
+
+    if(@sort == "title")      
       @movie_title_header = "hilite"      
       @movies = Movie.where("rating IN (?)", @ratingsValues).order("title")     
-      #@movies = .all(:conditions => []);
-    elsif(params[:sort] == "release_date")
+    elsif(@sort == "release_date")
       @release_date_header = "hilite"
       @movies = Movie.where("rating IN (?)", @ratingsValues).order("release_date")
-      #@movies = Movie.all.order("release_date")
     else
       @table_header = ""
       @movies = Movie.where("rating IN (?)", @ratingsValues)
